@@ -2,14 +2,12 @@ import Vue from 'vue'
 import config from './config'
 import { deepOverwrite } from '@/util'
 
-type a = typeof config
-
 export interface Authority {
   pid: string
   [name: string]: any
 }
 
-export default class Auth<U>{
+export default class Auth<U> {
   static install (_Vue: typeof Vue, options: any) {
     _Vue.prototype.$auth = new Auth(options)
   }
@@ -24,15 +22,9 @@ export default class Auth<U>{
     data: {
       auth: null,
       token: '',
-      authorities: [],
-      cachedUrl: ''
+      authorities: []
     }
   })
-
-  // 认证失败钩子
-  public authFailureHandler () {
-    let path =
-  }
 
   // 认证实体
   public get auth (): U | null{
@@ -45,7 +37,7 @@ export default class Auth<U>{
 
   // token
   public get token (): string {
-    let {enabled, storage}: any = this.config.token || {}
+    let { enabled, storage }: any = this.config.token || {}
     if (!enabled) return ''
     let t = this.vm.token
     if (!t && storage) {
@@ -56,7 +48,7 @@ export default class Auth<U>{
   }
 
   public set token (token: string) {
-    let {enabled, storage}: any = this.config.token || {}
+    let { enabled, storage }: any = this.config.token || {}
     if (!enabled) return
     this.vm.token = token
     if (storage) storage.set(token)
@@ -77,19 +69,47 @@ export default class Auth<U>{
     this.vm.authorities = this.vm.authorities || []
   }
 
-  // url
-  public get url (): string {
-    return this.vm.cachedUrl
-  }
-
   // 访问控制
-  access (pid: string): boolean {
-    return this.authorities.some(v => v.pid === pid)
+  public access (pid: string): Promise<any> {
+    let self = this
+    let auth = this.auth
+    if (!auth) {
+      let all = [this.config.loadAuth()]
+      if (this.config.loadAuthorities) all.push(this.config.loadAuthorities())
+      return Promise.all(all).then(([auth, authorities]) => {
+        this.auth = auth
+        this.authorities = authorities || []
+        return handle()
+      })
+    }
+    return handle()
+
+    function handle () {
+      let ret = self.authorities.some(v => v.pid === pid)
+      if (ret) return Promise.resolve()
+      return Promise.reject(new Error('access deny'))
+    }
   }
 
-  public clear (): void {
+  private clear (): void {
     this.auth = null
     this.token = ''
     this.authorities = []
+  }
+
+  public login (req: any) {
+    return this.config.login(req).then((data: any) => {
+      if (this.config.token.enabled) {
+        let { token } = data
+        if (!token) throw new Error('token required')
+        this.token = token
+      }
+    })
+  }
+
+  public logout () {
+    return this.config.logout().then(() => {
+      this.clear()
+    })
   }
 }
