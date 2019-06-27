@@ -11,6 +11,14 @@ export default function config () {
       data: 'data',
       successCode: '000000',
       expiredCode: '010104'
+    },
+    expiredHandler: function () {
+      const auth = Vue.prototype.$auth as any
+      if (auth) {
+        auth.invalidate()
+      } else {
+        console.warn('登录失效')
+      }
     }
   }
 }

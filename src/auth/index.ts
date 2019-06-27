@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import config from './config'
-import { deepOverwrite } from '@/util'
+import { deepOverwrite, confirm } from '@/util'
 
 export interface Authority {
   pid: string
@@ -22,9 +22,13 @@ export default class Auth<U> {
     data: {
       auth: null,
       token: '',
-      authorities: []
+      authorities: [],
+      redirectUrl: null
     }
   })
+
+  // 正在处理失效操作标志
+  private handlingInvalidate = false
 
   // 认证实体
   public get auth (): U | null{
@@ -69,6 +73,29 @@ export default class Auth<U> {
     this.vm.authorities = this.vm.authorities || []
   }
 
+  // 失效
+  public invalidate () {
+    if (this.handlingInvalidate) return
+    const loginPage = '/login'
+    let currentPath = getCurrentPath()
+    if (currentPath.startsWith(loginPage)) return
+    this.handlingInvalidate = true
+    this.clear()
+    confirm('登陆失效', '是否选择重新登录').then(() => {
+      this.vm.redirectUrl = currentPath
+      redirect(loginPage)
+    }).finally(() => {
+      this.handlingInvalidate = false
+    })
+
+    function redirect (path: string) {
+      window.location.hash = `#${path}`
+    }
+    function getCurrentPath () {
+      return window.location.hash.substr(1)
+    }
+  }
+
   // 访问控制
   public access (pid: string): Promise<any> {
     let self = this
@@ -95,6 +122,7 @@ export default class Auth<U> {
     this.auth = null
     this.token = ''
     this.authorities = []
+    this.vm.redirectUrl = null
   }
 
   public login (req: any) {
@@ -104,6 +132,9 @@ export default class Auth<U> {
         if (!token) throw new Error('token required')
         this.token = token
       }
+      let redirectUrl = this.vm.redirectUrl
+      this.vm.redirectUrl = null
+      return { redirectUrl }
     })
   }
 

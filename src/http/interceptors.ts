@@ -53,17 +53,18 @@ export default function (config: any) {
   }
 
   function handleTokenExpired () {
-    const loginPage = '/login'
-    let currentPath = getCurrentPath()
-    if (currentPath.startsWith(loginPage)) return
-    redirect(loginPage)
+    if (config.expiredHandler) config.expiredHandler()
+    // const loginPage = '/login'
+    // let currentPath = getCurrentPath()
+    // if (currentPath.startsWith(loginPage)) return
+    // redirect(loginPage)
 
-    function getCurrentPath () {
-      return window.location.hash.substr(1)
-    }
+    // function getCurrentPath () {
+    //   return window.location.hash.substr(1)
+    // }
 
-    function redirect (path: string) {
-      window.location.hash = `#${path}`
-    }
+    // function redirect (path: string) {
+    //   window.location.hash = `#${path}`
+    // }
   }
 }

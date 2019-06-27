@@ -2,9 +2,10 @@
   "name": "@pat-fet/web-vue-utils",
   "version": "0.1.0",
   "main": "dist/web-vue-utils.common.js",
+  "types": "types/index.d.ts",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name web-vue-utils src/index.ts",
+    "serve": "vue-cli-service serve dev/main.ts",
+    "build": "node ./scripts/build.js",
     "lint": "vue-cli-service lint",
     "prepublish": "npm run build"
   },
@@ -28,7 +29,9 @@
     "eslint-plugin-vue": "^5.0.0",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.1.0",
+    "shelljs": "^0.8.3",
     "typescript": "^3.4.3",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "webpack-cli": "^3.3.5"
   }
 }
