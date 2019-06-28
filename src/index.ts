@@ -1,7 +1,7 @@
-import auth from './auth'
-import http from './http'
+import Auth from './auth'
+import Http from './http'
 
 export {
-  auth,
-  http
+  Auth,
+  Http
 }

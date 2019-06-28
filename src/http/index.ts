@@ -19,8 +19,22 @@ function getInst (options: any): AxiosInstance {
   return http
 }
 
-export default class Http {
-  static install (_Vue: typeof Vue, options: any) {
-    _Vue.prototype.$http = getInst(options)
-  }
+interface Http extends AxiosInstance {
 }
+
+// export default class Http implements AxiosInstance{
+//   static install (_Vue: typeof Vue, options: any) {
+//     _Vue.prototype.$http = getInst(options)
+//   }
+// }
+
+const HttpConstructor = function (options: any): Http {
+  return getInst(options)
+}
+
+HttpConstructor.install = function (_Vue: typeof Vue, options: any) {
+  _Vue.prototype.$http = new (HttpConstructor(options) as any)
+}
+
+export default HttpConstructor
+
