@@ -21,38 +21,37 @@ function getInst (options: any): AxiosInstance {
 
 export default class Http {
   private _inst: AxiosInstance
-  
+
   constructor (options: any) {
     this._inst = getInst(options)
   }
 
-  static install(_Vue: typeof Vue, options: any) {
+  static install (_Vue: typeof Vue, options: any) {
     _Vue.prototype.$http = new Http(options)
   }
 
   getUri (config?: AxiosRequestConfig): string {
     return this._inst.getUri(config)
   }
-  request<T = any, R = AxiosResponse<T>>(config: AxiosRequestConfig): Promise<R> {
+  request<T = any, R = AxiosResponse<T>> (config: AxiosRequestConfig): Promise<R> {
     return this._inst.request(config)
   }
-  get<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
+  get<T = any, R = AxiosResponse<T>> (url: string, config?: AxiosRequestConfig): Promise<R> {
     return this._inst.get(url, config)
   }
-  delete<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
+  delete<T = any, R = AxiosResponse<T>> (url: string, config?: AxiosRequestConfig): Promise<R> {
     return this._inst.delete(url, config)
   }
-  head<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
+  head<T = any, R = AxiosResponse<T>> (url: string, config?: AxiosRequestConfig): Promise<R> {
     return this.head(url, config)
   }
-  post<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
+  post<T = any, R = AxiosResponse<T>> (url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
     return this._inst.post(url, data, config)
   }
-  put<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
+  put<T = any, R = AxiosResponse<T>> (url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
     return this._inst.put(url, data, config)
   }
-  patch<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
+  patch<T = any, R = AxiosResponse<T>> (url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
     return this._inst.patch(url, data, config)
   }
 }
-

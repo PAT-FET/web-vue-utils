@@ -2,10 +2,11 @@ import Vue from 'vue'
 import Router, { NavigationGuard } from 'vue-router'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
+import Auth from '../src/auth/index'
 
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
   routes: [
     {
       path: '/',
@@ -20,8 +21,19 @@ export default new Router({
   ]
 })
 
-
 const frontGuard: NavigationGuard = function (to, from, next)  {
-  // if(to.fullPath === '/' && )
+  const auth = Vue.prototype.$auth as Auth<any>
+  if(to.fullPath === '/') {
+    auth.access('home').then(() => {
+      next()
+    }).catch(() => {
+      next('/login')
+    })
+    return
+  }
   next()
 }
+
+router.beforeEach(frontGuard)
+
+export default router

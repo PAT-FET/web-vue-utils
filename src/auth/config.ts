@@ -1,8 +1,8 @@
 import Vue from 'vue'
+import { Principle } from './index'
 
 export default function config () {
   return {
-    userId: 'username',
     token: {
       enabled: true,
       key: 'X-Token',
@@ -18,8 +18,7 @@ export default function config () {
     urls: {
       login: '/login',
       logout: '/logout',
-      loadAuth: '/users',
-      loadAuthorities: '/resources'
+      loadPrinciple: '/principle'
     },
     login: function (req: any): Promise<{token: string}> {
       let http = Vue.prototype.$http as any
@@ -31,21 +30,14 @@ export default function config () {
     logout: function (): Promise<any> {
       let http = Vue.prototype.$http as any
       if (http) {
-        return http.post(this.urls.logout)
+        return http.delete(this.urls.logout)
       }
       throw new Error('not implemented')
     },
-    loadAuth: function (): Promise<any> {
+    loadPrinciple: function <T extends Principle> (): Promise<T> {
       let http = Vue.prototype.$http as any
       if (http) {
-        return http.get(this.urls.loadAuth)
-      }
-      throw new Error('not implemented')
-    },
-    loadAuthorities: function (): Promise<any> {
-      let http = Vue.prototype.$http as any
-      if (http) {
-        return http.post(this.urls.loadAuthorities)
+        return http.get(this.urls.loadPrinciple)
       }
       throw new Error('not implemented')
     }

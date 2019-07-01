@@ -2,7 +2,7 @@
   <div :class="[$style.container]">
     <div :class="[$style.header]">
       <span></span>
-      <button class="button">退出</button>
+      <button class="button" @click="onLogout">退出</button>
     </div>
   </div>
 </template>
@@ -11,7 +11,14 @@
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component
-export default class Home extends Vue {}
+export default class Home extends Vue {
+
+  onLogout () {
+    this.$auth.logout().then(() => {
+      this.$router.push('/login')
+    })
+  }
+}
 </script>
 
 <style lang="scss" module>

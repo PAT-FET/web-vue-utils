@@ -7,9 +7,28 @@ export interface Authority {
   [name: string]: any
 }
 
-export default class Auth<U> {
-  static install (_Vue: typeof Vue, options: any) {
-    _Vue.prototype.$auth = new Auth(options)
+export interface Role {
+  code: string
+  [key: string]: any
+}
+
+export interface Principle {
+  roles: Role[]
+
+  authorities: Authority[]
+
+  username: string
+
+  [key: string]: any
+}
+
+export interface AuthOptions<T> {
+  [key: string]: any
+}
+
+export default class Auth<U extends Principle> {
+  static install<T extends Principle> (_Vue: typeof Vue, options: AuthOptions<T>) {
+    _Vue.prototype.$auth = new Auth<T>(options)
   }
 
   constructor (options: any) {
@@ -20,9 +39,8 @@ export default class Auth<U> {
 
   vm: any = new Vue({
     data: {
-      auth: null,
+      principle: null,
       token: '',
-      authorities: [],
       redirectUrl: null
     }
   })
@@ -31,12 +49,12 @@ export default class Auth<U> {
   private handlingInvalidate = false
 
   // 认证实体
-  public get auth (): U | null{
-    return this.vm.auth
+  public get principle (): U | null{
+    return this.vm.principle
   }
 
-  public set auth (auth: U | null) {
-    this.vm.auth = auth
+  public set principle (principle: U | null) {
+    this.vm.principle = principle
   }
 
   // token
@@ -58,19 +76,14 @@ export default class Auth<U> {
     if (storage) storage.set(token)
   }
 
+  // Authenticated
+  public get authenticated () {
+    return !!this.principle
+  }
+
   // 用户名
-  public get username (): string {
-    let { userId } = this.config
-    return (this.auth as any)[userId]
-  }
-
-  // 权限
-  public get authorities (): Authority[] {
-    return this.vm.authorities
-  }
-
-  public set authorities (authorities: Authority[]) {
-    this.vm.authorities = this.vm.authorities || []
+  public get username (): string | null {
+    return this.principle && this.principle.username
   }
 
   // 失效
@@ -99,29 +112,27 @@ export default class Auth<U> {
   // 访问控制
   public access (pid: string): Promise<any> {
     let self = this
-    let auth = this.auth
-    if (!auth) {
-      let all = [this.config.loadAuth()]
-      if (this.config.loadAuthorities) all.push(this.config.loadAuthorities())
-      return Promise.all(all).then(([auth, authorities]) => {
-        this.auth = auth
-        this.authorities = authorities || []
+    let principle = this.principle
+    if (!principle) {
+      let all = [this.config.loadPrinciple()]
+      return Promise.all(all).then(([principle]) => {
+        this.principle = principle
         return handle()
       })
     }
     return handle()
 
     function handle () {
-      let ret = self.authorities.some(v => v.pid === pid)
+      const authorities = (self.principle && self.principle.authorities) || []
+      let ret = authorities.some(v => v.pid === pid)
       if (ret) return Promise.resolve()
       return Promise.reject(new Error('access deny'))
     }
   }
 
   private clear (): void {
-    this.auth = null
+    this.principle = null
     this.token = ''
-    this.authorities = []
     this.vm.redirectUrl = null
   }
 
