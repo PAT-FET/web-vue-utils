@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import defaultConfig from './config'
 import { deepOverwrite } from '@/util'
-import axios, { AxiosInstance } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosInterceptorManager, AxiosResponse } from 'axios'
 import interceptorsFn from './interceptors'
 
 function getInst (options: any): AxiosInstance {
@@ -19,22 +19,40 @@ function getInst (options: any): AxiosInstance {
   return http
 }
 
-interface Http extends AxiosInstance {
+export default class Http {
+  private _inst: AxiosInstance
+  
+  constructor (options: any) {
+    this._inst = getInst(options)
+  }
+
+  static install(_Vue: typeof Vue, options: any) {
+    _Vue.prototype.$http = new Http(options)
+  }
+
+  getUri (config?: AxiosRequestConfig): string {
+    return this._inst.getUri(config)
+  }
+  request<T = any, R = AxiosResponse<T>>(config: AxiosRequestConfig): Promise<R> {
+    return this._inst.request(config)
+  }
+  get<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
+    return this._inst.get(url, config)
+  }
+  delete<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
+    return this._inst.delete(url, config)
+  }
+  head<T = any, R = AxiosResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
+    return this.head(url, config)
+  }
+  post<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
+    return this._inst.post(url, data, config)
+  }
+  put<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
+    return this._inst.put(url, data, config)
+  }
+  patch<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
+    return this._inst.patch(url, data, config)
+  }
 }
-
-// export default class Http implements AxiosInstance{
-//   static install (_Vue: typeof Vue, options: any) {
-//     _Vue.prototype.$http = getInst(options)
-//   }
-// }
-
-const HttpConstructor = function (options: any): Http {
-  return getInst(options)
-}
-
-HttpConstructor.install = function (_Vue: typeof Vue, options: any) {
-  _Vue.prototype.$http = new (HttpConstructor(options) as any)
-}
-
-export default HttpConstructor
 

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Router from 'vue-router'
+import Router, { NavigationGuard } from 'vue-router'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 
@@ -19,3 +19,9 @@ export default new Router({
     }
   ]
 })
+
+
+const frontGuard: NavigationGuard = function (to, from, next)  {
+  // if(to.fullPath === '/' && )
+  next()
+}
