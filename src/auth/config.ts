@@ -15,6 +15,8 @@ export default function config () {
         }
       }
     },
+    loginPage: '/login',
+    successPage: '/',
     urls: {
       login: '/login',
       logout: '/logout',

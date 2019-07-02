@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import config from './config'
-import { deepOverwrite, confirm } from '@/util'
+import { deepOverwrite } from '@/util'
+import { confirm } from '@/ui'
 
 export interface Authority {
   pid: string
@@ -89,7 +90,7 @@ export default class Auth<U extends Principle> {
   // 失效
   public invalidate () {
     if (this.handlingInvalidate) return
-    const loginPage = '/login'
+    const loginPage = this.config.loginPage
     let currentPath = getCurrentPath()
     if (currentPath.startsWith(loginPage)) return
     this.handlingInvalidate = true
@@ -100,13 +101,6 @@ export default class Auth<U extends Principle> {
     }).finally(() => {
       this.handlingInvalidate = false
     })
-
-    function redirect (path: string) {
-      window.location.hash = `#${path}`
-    }
-    function getCurrentPath () {
-      return window.location.hash.substr(1)
-    }
   }
 
   // 访问控制
@@ -130,6 +124,11 @@ export default class Auth<U extends Principle> {
     }
   }
 
+  public hasRole (...roles: string[]) {
+    let roleList = ((this.principle && this.principle.roles) || []).map(v => v.code)
+    return roleList.some(v => roles.includes(v))
+  }
+
   private clear (): void {
     this.principle = null
     this.token = ''
@@ -145,6 +144,11 @@ export default class Auth<U extends Principle> {
       }
       let redirectUrl = this.vm.redirectUrl
       this.vm.redirectUrl = null
+      if (redirectUrl) {
+        redirect(redirectUrl)
+      } else {
+        redirect(this.config.successPage)
+      }
       return { redirectUrl }
     })
   }
@@ -154,4 +158,12 @@ export default class Auth<U extends Principle> {
       this.clear()
     })
   }
+}
+
+function redirect (path: string) {
+  window.location.hash = `#${path}`
+}
+
+function getCurrentPath () {
+  return window.location.hash.substr(1)
 }

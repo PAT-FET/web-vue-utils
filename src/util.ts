@@ -20,11 +20,3 @@ export function deepOverwrite (target: any, source: any) {
     return Object.prototype.toString.call(obj) === '[object Object]'
   }
 }
-
-export function confirm (title: string, content: string): Promise<any> {
-  const vua = Vue.prototype.vua
-  if (vua) {
-    return Vue.prototype.$modal.confirm
-  }
-  return window.confirm(content) ? Promise.resolve() : Promise.reject(new Error('confirm cancel'))
-}

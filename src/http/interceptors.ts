@@ -1,7 +1,7 @@
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import Vue from 'vue'
 import transformFn from './transform'
-import { message, confirm } from './ui'
+import { message, confirm } from '@/ui'
 
 export default function (config: any) {
   const transform = transformFn(config)
@@ -54,17 +54,5 @@ export default function (config: any) {
 
   function handleTokenExpired () {
     if (config.expiredHandler) config.expiredHandler()
-    // const loginPage = '/login'
-    // let currentPath = getCurrentPath()
-    // if (currentPath.startsWith(loginPage)) return
-    // redirect(loginPage)
-
-    // function getCurrentPath () {
-    //   return window.location.hash.substr(1)
-    // }
-
-    // function redirect (path: string) {
-    //   window.location.hash = `#${path}`
-    // }
   }
 }

@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { message } from '@/ui'
 
 export default function config () {
   return {
@@ -17,7 +18,7 @@ export default function config () {
       if (auth) {
         auth.invalidate()
       } else {
-        console.warn('登录失效')
+        message('登录失效')
       }
     }
   }
