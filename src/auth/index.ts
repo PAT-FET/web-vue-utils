@@ -46,6 +46,8 @@ export default class Auth<U extends Principle> {
     }
   })
 
+  _lastPrinciple: Principle | null = null
+
   // 正在处理失效操作标志
   private handlingInvalidate = false
 
@@ -55,6 +57,7 @@ export default class Auth<U extends Principle> {
   }
 
   public set principle (principle: U | null) {
+    this._lastPrinciple = this.vm.principle
     this.vm.principle = principle
   }
 
@@ -136,21 +139,32 @@ export default class Auth<U extends Principle> {
   }
 
   public login (req: any) {
+    const self = this
     return this.config.login(req).then((data: any) => {
       if (this.config.token.enabled) {
         let { token } = data
         if (!token) throw new Error('token required')
         this.token = token
       }
+      let all = [this.config.loadPrinciple()]
+      return Promise.all(all).then(([principle]) => {
+        this.principle = principle
+      })
+    }).then(() => {
       let redirectUrl = this.vm.redirectUrl
       this.vm.redirectUrl = null
-      if (redirectUrl) {
+      if (redirectUrl && !isSamePrinciple()) {
         redirect(redirectUrl)
       } else {
         redirect(this.config.successPage)
       }
       return { redirectUrl }
     })
+
+    function isSamePrinciple () {
+      return self._lastPrinciple && !self._lastPrinciple.username 
+      && self._lastPrinciple.username === (self.principle && self.principle.username)
+    }
   }
 
   public logout () {
