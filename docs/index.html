@@ -7,18 +7,34 @@
   <meta name="description" content="A Toolbox for web develop base on vue">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
 </head>
 <body>
   <div id="app"></div>
+  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
   <script>
+    var num = 0;
+    mermaid.initialize({ startOnLoad: false });
     window.$docsify = {
       name: '@pat-fet/web-vue-utils',
       repo: '',
       coverpage: true,
       loadSidebar: true,
-      subMaxLevel: 2
+      subMaxLevel: 2,
+      markdown: {
+        renderer: {
+          code: function (code, lang) {
+            if (lang === "mermaid") {
+              return (
+                '<div class="mermaid">' + mermaid.render('mermaid-svg-' + num++, code) + "</div>"
+              );
+            }
+            return this.origin.code.apply(this, arguments);
+          }
+        }
+      }
     }
   </script>
-  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
 </body>
 </html>

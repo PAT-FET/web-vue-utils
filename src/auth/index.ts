@@ -111,9 +111,7 @@ export default class Auth<U extends Principle> {
     let self = this
     let principle = this.principle
     if (!principle) {
-      let all = [this.config.loadPrinciple()]
-      return Promise.all(all).then(([principle]) => {
-        this.principle = principle
+      this.loadPrinciple().then(() => {
         return handle()
       })
     }
@@ -146,10 +144,7 @@ export default class Auth<U extends Principle> {
         if (!token) throw new Error('token required')
         this.token = token
       }
-      let all = [this.config.loadPrinciple()]
-      return Promise.all(all).then(([principle]) => {
-        this.principle = principle
-      })
+      return this.loadPrinciple()
     }).then(() => {
       let redirectUrl = this.vm.redirectUrl
       this.vm.redirectUrl = null
@@ -172,6 +167,15 @@ export default class Auth<U extends Principle> {
       this.clear()
     })
   }
+
+  public loadPrinciple (): Promise<Principle> {
+    let all = [this.config.loadPrinciple()]
+    return Promise.all(all).then(([principle]) => {
+      this.principle = principle
+      return Promise.resolve(this.principle) as Promise<Principle>
+    })
+  }
+
 }
 
 function redirect (path: string) {
