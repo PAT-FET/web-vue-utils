@@ -157,8 +157,8 @@ export default class Auth<U extends Principle> {
     })
 
     function isSamePrinciple () {
-      return self._lastPrinciple && !self._lastPrinciple.username 
-      && self._lastPrinciple.username === (self.principle && self.principle.username)
+      return self._lastPrinciple && !self._lastPrinciple.username &&
+      self._lastPrinciple.username === (self.principle && self.principle.username)
     }
   }
 
@@ -175,7 +175,6 @@ export default class Auth<U extends Principle> {
       return Promise.resolve(this.principle) as Promise<Principle>
     })
   }
-
 }
 
 function redirect (path: string) {

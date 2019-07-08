@@ -8,7 +8,7 @@ export default {
         return vua.$modal.confirm({ title, content }) as Promise<any>
       }
       let ret = window.confirm(content)
-      return ret ? Promise.resolve() : Promise.reject()
+      return ret ? Promise.resolve() : Promise.reject(new Error('cancel'))
     },
     message: function (text: string) {
       const vua = Vue.prototype.$vua as any

@@ -17,6 +17,7 @@ export default function config () {
     },
     loginPage: '/login',
     successPage: '/',
+    // deniedPage: '/error/403',
     urls: {
       login: '/login',
       logout: '/logout',

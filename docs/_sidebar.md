@@ -6,4 +6,4 @@
 * Plugins
 
   * [Auth](plugins/auth.md)
-  * [Http](pligins/http.md)
+  * [Http](plugins/http.md)
