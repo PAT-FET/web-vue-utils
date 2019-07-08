@@ -1,5 +1,5 @@
+import { Principle } from './index';
 export default function config(): {
-    userId: string;
     token: {
         enabled: boolean;
         key: string;
@@ -8,16 +8,16 @@ export default function config(): {
             set: (token: string) => void;
         };
     };
+    loginPage: string;
+    successPage: string;
     urls: {
         login: string;
         logout: string;
-        loadAuth: string;
-        loadAuthorities: string;
+        loadPrinciple: string;
     };
     login: (req: any) => Promise<{
         token: string;
     }>;
     logout: () => Promise<any>;
-    loadAuth: () => Promise<any>;
-    loadAuthorities: () => Promise<any>;
+    loadPrinciple: <T extends Principle>() => Promise<T>;
 };
