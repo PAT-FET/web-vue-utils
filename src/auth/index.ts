@@ -111,7 +111,7 @@ export default class Auth<U extends Principle> {
     let self = this
     let principle = this.principle
     if (!principle) {
-      this.loadPrinciple().then(() => {
+      return this.loadPrinciple().then(() => {
         return handle()
       })
     }
@@ -120,8 +120,8 @@ export default class Auth<U extends Principle> {
     function handle () {
       const authorities = (self.principle && self.principle.authorities) || []
       let ret = authorities.some(v => v.pid === pid)
-      if (ret) return Promise.resolve()
-      return Promise.reject(new Error('access deny'))
+      if (ret) return Promise.resolve(true)
+      return Promise.resolve(false)
     }
   }
 
@@ -140,8 +140,10 @@ export default class Auth<U extends Principle> {
     const self = this
     return this.config.login(req).then((data: any) => {
       if (this.config.token.enabled) {
+        if (!data || !data.token) {
+          throw new Error('token required')
+        }
         let { token } = data
-        if (!token) throw new Error('token required')
         this.token = token
       }
       return this.loadPrinciple()

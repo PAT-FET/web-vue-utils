@@ -2,7 +2,7 @@ import Auth from './auth'
 import Http from './http'
 import defaultConfig from './config'
 import { deepOverwrite } from './util'
-import Vue from 'vue'
+import './vue'
 
 export {
   Auth,

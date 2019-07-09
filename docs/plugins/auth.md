@@ -111,7 +111,7 @@ graph TD;
 
 - `loadPrinciple (): Promise<Principle>` - 加载认证实体
 
-- `access (pid: string): Promise<any>` - 权限访问
+- `access (pid: string): Promise<boolean>` - 权限访问
 
 - `hasRole (...roles: string[]): boolean` - 角色判断
 

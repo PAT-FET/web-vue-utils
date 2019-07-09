@@ -1,5 +1,6 @@
 import Auth from './auth';
 import Http from './http';
+import './vue';
 export { Auth, Http };
 declare const _default: {
     config: (options: any) => any;
