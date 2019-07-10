@@ -15,6 +15,7 @@ export default function config () {
         }
       }
     },
+    excludeRedirectPages: ['/login', '/error/**'],
     loginPage: '/login',
     successPage: '/',
     // deniedPage: '/error/403',

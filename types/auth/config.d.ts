@@ -8,6 +8,7 @@ export default function config(): {
             set: (token: string) => void;
         };
     };
+    excludeRedirectPages: string[];
     loginPage: string;
     successPage: string;
     urls: {
