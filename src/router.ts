@@ -7,6 +7,7 @@ export function redirect (path: string) {
   //   window.location.hash = `#${path}`
   // }
   window.location.hash = `#${path}`
+  window.location.reload()
 }
 
 export function getCurrentPath () {
