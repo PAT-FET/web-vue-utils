@@ -38,26 +38,34 @@ export default class Storage extends Vue {
     _Vue.prototype.$storage = storage
   }
 
-    public vendor: StorageVendor = new LocalStorage()
+  public vendor: StorageVendor = new LocalStorage()
 
-    public namespace: string = ''
+  public namespace: string = ''
 
-    private state: any = {}
+  private state: any = {}
 
-    public set (key: string, value: any, namespace?: string) {
-      let ns = namespace || this.namespace
-      return this.vendor.set(key, value, ns).then(() => {
-        return this.get(key, ns)
-      })
+  public set (key: string, value: any, namespace?: string) {
+    let ns = namespace || this.namespace
+    return this.vendor.set(key, value, ns).then(() => {
+      return this.get(key, ns)
+    })
+  }
+
+  public get (key: string, namespace?: string) {
+    let ns = namespace || this.namespace
+    let value = this.state[key]
+    if (value === undefined) {
+      this.$set(this.state, key, null)
+      this.load(key, namespace)
     }
+    return this.state[key]
+  }
 
-    public get (key: string, namespace?: string) {
-      let ns = namespace || this.namespace
-      let value = this.state[key]
-      if (value === undefined) this.$set(this.state, key, null)
-      value = this.state[key] // just for dependence
-      return this.vendor.get(key, ns).then(data => {
-        this.state[key] = data || null
-      })
-    }
+  public load (key: string, namespace?: string) {
+    let ns = namespace || this.namespace
+    return this.vendor.get(key, ns).then(data => {
+      this.$set(this.state, key, data === undefined ? null : data)
+      return this.state[key]
+    })
+  }
 }

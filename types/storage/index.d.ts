@@ -16,6 +16,7 @@ export default class Storage extends Vue {
     vendor: StorageVendor;
     namespace: string;
     private state;
-    set(key: string, value: any, namespace?: string): Promise<void>;
-    get(key: string, namespace?: string): Promise<void>;
+    set(key: string, value: any, namespace?: string): Promise<any>;
+    get(key: string, namespace?: string): any;
+    load(key: string, namespace?: string): Promise<any>;
 }
