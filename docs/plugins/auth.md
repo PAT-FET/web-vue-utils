@@ -44,6 +44,7 @@ graph TD;
         }
       }
     },
+    excludeRedirectPages: ['/login', '/error/**'],
     loginPage: '/login',
     successPage: '/',
     // deniedPage: '/error/403',

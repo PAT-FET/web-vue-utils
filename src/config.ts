@@ -18,5 +18,6 @@ export default {
         alert(text)
       }
     }
-  }
+  },
+  router: null // 请指定路由，使用原生尚有bug
 }

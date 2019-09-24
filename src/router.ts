@@ -1,20 +1,20 @@
-import Vue from 'vue'
+import config from './config'
 
 export function redirect (path: string) {
-  // if (Vue.prototype.$router) {
-  //   Vue.prototype.$router.push(path)
-  // } else {
-  //   window.location.hash = `#${path}`
-  // }
-  window.location.hash = `#${path}`
-  window.location.reload()
+  const router: any = config.router
+  if (router) {
+    router.push(path)
+  } else {
+    window.location.hash = `#${path}`
+    window.location.reload()
+  }
 }
 
 export function getCurrentPath () {
-  // if (Vue.prototype.$route) {
-  //   return Vue.prototype.$route.path
-  // } else {
-  //   return window.location.hash.substr(1)
-  // }
-  return window.location.hash.substr(1)
+  const router: any = config.router
+  if (router) {
+    return router.currentRoute.path
+  } else {
+    return window.location.hash.substr(1)
+  }
 }
