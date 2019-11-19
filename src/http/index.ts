@@ -33,25 +33,25 @@ export default class Http {
   getUri (config?: AxiosRequestConfig): string {
     return this._inst.getUri(config)
   }
-  request<T = any, R = AxiosResponse<T>> (config: AxiosRequestConfig): Promise<R> {
+  request<T = any> (config: AxiosRequestConfig): Promise<T> {
     return this._inst.request(config)
   }
-  get<T = any, R = AxiosResponse<T>> (url: string, config?: AxiosRequestConfig): Promise<R> {
+  get<T = any> (url: string, config?: AxiosRequestConfig): Promise<T> {
     return this._inst.get(url, config)
   }
-  delete<T = any, R = AxiosResponse<T>> (url: string, config?: AxiosRequestConfig): Promise<R> {
+  delete<T = any> (url: string, config?: AxiosRequestConfig): Promise<T> {
     return this._inst.delete(url, config)
   }
-  head<T = any, R = AxiosResponse<T>> (url: string, config?: AxiosRequestConfig): Promise<R> {
+  head<T = any> (url: string, config?: AxiosRequestConfig): Promise<T> {
     return this.head(url, config)
   }
-  post<T = any, R = AxiosResponse<T>> (url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
+  post<T = any> (url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     return this._inst.post(url, data, config)
   }
-  put<T = any, R = AxiosResponse<T>> (url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
+  put<T = any> (url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     return this._inst.put(url, data, config)
   }
-  patch<T = any, R = AxiosResponse<T>> (url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
+  patch<T = any> (url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     return this._inst.patch(url, data, config)
   }
 }

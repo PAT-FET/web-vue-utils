@@ -2,6 +2,7 @@ import Vue from 'vue'
 import config from './config'
 import { deepOverwrite } from '@/util'
 import { confirm } from '@/ui'
+import { redirect, getCurrentPath } from '@/router'
 
 export interface Authority {
   pid: string
@@ -92,18 +93,40 @@ export default class Auth<U extends Principle> {
 
   // 失效
   public invalidate () {
+    let self = this
     if (this.handlingInvalidate) return
     const loginPage = this.config.loginPage
     let currentPath = getCurrentPath()
     if (currentPath.startsWith(loginPage)) return
-    this.handlingInvalidate = true
-    this.clear()
-    confirm('登陆失效', '是否选择重新登录').then(() => {
-      this.vm.redirectUrl = currentPath
+    if (this.authenticated) {
+      this.handlingInvalidate = true
+      confirm('登陆失效', '是否选择重新登录').then(() => {
+        this.clear()
+        handle()
+      }).finally(() => {
+        this.handlingInvalidate = false
+      })
+    } else {
+      handle()
+    }
+
+    function handle () {
+      const excludeRedirectPages = self.config.excludeRedirectPages || []
+      if (!checkExclude(currentPath)) self.vm.redirectUrl = currentPath
       redirect(loginPage)
-    }).finally(() => {
-      this.handlingInvalidate = false
-    })
+
+      function checkExclude (page: string) {
+        const convertRegEx = (expr: string) => {
+          return new RegExp('^' +
+            (expr || '')
+              .replace(/\*\*/g, '#__#')
+              .replace(/\*/g, '[^/]*')
+              .replace(/#__#/g, '.*') +
+            '$')
+        }
+        return excludeRedirectPages.some((v: any) => convertRegEx(v).test(page))
+      }
+    }
   }
 
   // 访问控制
@@ -167,6 +190,8 @@ export default class Auth<U extends Principle> {
   public logout () {
     return this.config.logout().then(() => {
       this.clear()
+      const loginPage = this.config.loginPage
+      redirect(loginPage)
     })
   }
 
@@ -177,12 +202,4 @@ export default class Auth<U extends Principle> {
       return Promise.resolve(this.principle) as Promise<Principle>
     })
   }
-}
-
-function redirect (path: string) {
-  window.location.hash = `#${path}`
-}
-
-function getCurrentPath () {
-  return window.location.hash.substr(1)
 }
