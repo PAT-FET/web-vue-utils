@@ -21,6 +21,6 @@ export default function (config: any) {
     if (response.data[map.code] === map.successCode) return Promise.resolve(response.data[map.data])
     if (response.data[map.code] === map.expiredCode) status = 401
     let msg = response.data[map.msg] || response.data[map.data] || response.data[map.code]
-    return Promise.reject(new TransError(status, msg, response.data))
+    return Promise.reject(new TransError(status, msg, response.data[map.data]))
   }
 }

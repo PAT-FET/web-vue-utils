@@ -21,7 +21,10 @@
       successCode: '000000',
       expiredCode: '010104'
     },
-    expiredHandler: function () {
+    request: (cfg: AxiosRequestConfig) => {},
+    response: (response: AxiosResponse) => {},
+    timestamp: true,
+    expiredHandler: function (data: any) {
       const auth = Vue.prototype.$auth as any
       if (auth) {
         auth.invalidate()

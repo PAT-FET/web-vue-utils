@@ -1,3 +1,4 @@
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 export default function config(): {
     baseURL: string;
     withCredentials: boolean;
@@ -9,5 +10,8 @@ export default function config(): {
         successCode: string;
         expiredCode: string;
     };
-    expiredHandler: () => void;
+    request: (cfg: AxiosRequestConfig) => void;
+    response: (response: AxiosResponse<any>) => void;
+    timestamp: boolean;
+    expiredHandler: (data: any) => void;
 };
