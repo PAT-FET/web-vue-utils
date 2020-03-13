@@ -142,9 +142,20 @@ export default class Auth<U extends Principle> {
 
     function handle () {
       const authorities = (self.principle && self.principle.authorities) || []
-      let ret = authorities.some(v => v.pid === pid)
+      let ret = false
+      if (self.config.cascade && self.config.cascade.enabled) {
+        ret = findInTree(pid, authorities)
+      } else {
+        ret = authorities.some(v => v.pid === pid)
+      }
       if (ret) return Promise.resolve(true)
       return Promise.resolve(false)
+
+      function findInTree (p: string, list: any[]): boolean {
+        const { pid, children } = self.config.cascade
+        if (!Array.isArray(list) || list.length < 1) return false
+        return list.some((v: any) => v[pid] === p || findInTree(p, v[children]))
+      }
     }
   }
 

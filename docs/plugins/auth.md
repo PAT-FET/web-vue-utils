@@ -47,6 +47,11 @@ graph TD;
     excludeRedirectPages: ['/login', '/error/**'],
     loginPage: '/login',
     successPage: '/',
+    cascade: {
+      enabled: false,
+      pid: 'code',
+      children: 'children'
+    },
     // deniedPage: '/error/403',
     urls: {
       login: '/login',
