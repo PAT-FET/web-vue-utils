@@ -11,6 +11,11 @@ export default function config(): {
     excludeRedirectPages: string[];
     loginPage: string;
     successPage: string;
+    cascade: {
+        enabled: boolean;
+        pid: string;
+        children: string;
+    };
     urls: {
         login: string;
         logout: string;
